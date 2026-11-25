@@ -10,16 +10,18 @@ N_ELEC = 2
 gibbs_reaction = -237.129 * 1000  # kJ -> J
 standard_state_potential = -gibbs_reaction / (N_ELEC * FARADAY)
 
-if __name__ == "__main__":
 
-    def nernst(atmospheres: np.ndarray) -> np.ndarray:
-        """
-        Calculate the Nernst potential based on the Hydrogen pressure in
-        atmospheres.
-        """
-        return standard_state_potential - GASSY * C25 / (
-            N_ELEC * FARADAY
-        ) * np.log(np.reciprocal(atmospheres))
+def nernst(atmospheres: np.ndarray) -> np.ndarray:
+    """
+    Calculate the Nernst potential based on the Hydrogen pressure in
+    atmospheres.
+    """
+    return standard_state_potential - GASSY * C25 / (N_ELEC * FARADAY) * np.log(
+        np.reciprocal(atmospheres)
+    )
+
+
+def main():
 
     print(f"Gibbs = {gibbs_reaction / 1000:.3f} kJ/mol")
     print(f"U° = {standard_state_potential:.3f} V")
@@ -56,7 +58,7 @@ if __name__ == "__main__":
     figure, axis = plt.subplots()
 
     axis.scatter(
-        data["current_density"],
+        data["current_density"] * 10,  # data is scaled wrong
         data["voltage"],
         marker=".",
         label="Literature Data",
@@ -75,3 +77,9 @@ if __name__ == "__main__":
     figure.tight_layout()
 
     figure.savefig(figure_dir.joinpath("data-and-OCV.svg"))
+
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
